@@ -466,13 +466,7 @@ public class SubredditView extends BaseActivity {
     public void onDestroy() {
         super.onDestroy();
         if (sub != null) {
-            if (sub.isNsfw() && (!SettingValues.storeHistory || !SettingValues.storeNSFWHistory)) {
-                SharedPreferences.Editor e = Reddit.cachedData.edit();
-                for (String s : OfflineSubreddit.getAll(sub.getDisplayName())) {
-                    e.remove(s);
-                }
-                e.apply();
-            } else if (!SettingValues.storeHistory) {
+            if (!SettingValues.storeHistory) {
                 SharedPreferences.Editor e = Reddit.cachedData.edit();
                 for (String s : OfflineSubreddit.getAll(sub.getDisplayName())) {
                     e.remove(s);
@@ -2092,41 +2086,6 @@ public class SubredditView extends BaseActivity {
                     if (!isFinishing()) finish();
                 }
                 SubredditView.this.subreddit = sub.getDisplayName();
-
-                if (subreddit.isNsfw()
-                        && SettingValues.storeHistory
-                        && SettingValues.storeNSFWHistory) {
-                    UserSubscriptions.addSubToHistory(subreddit.getDisplayName());
-                } else if (SettingValues.storeHistory && !subreddit.isNsfw()) {
-                    UserSubscriptions.addSubToHistory(subreddit.getDisplayName());
-                }
-
-                // Over 18 interstitial for signed out users or those who haven't enabled NSFW content
-                if (subreddit.isNsfw() && (!SettingValues.showNSFWContent)) {
-                    new AlertDialogWrapper.Builder(SubredditView.this).setTitle(
-                            getString(R.string.over18_title, subreddit.getDisplayName()))
-                            .setMessage(getString(R.string.over18_desc) + "\n\n" + getString(
-                                    Authentication.isLoggedIn ? R.string.over18_desc_loggedin
-                                            : R.string.over18_desc_loggedout))
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.misc_continue,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            ((SubmissionsView) adapter.getCurrentFragment()).doAdapter(
-                                                    true);
-                                        }
-                                    })
-                            .setNeutralButton(R.string.btn_go_back,
-                                    new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            finish();
-                                            overridePendingTransition(0, R.anim.fade_out);
-                                        }
-                                    })
-                            .show();
-                }
             }
         }
 

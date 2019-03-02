@@ -76,7 +76,7 @@ public class SubredditPostsRealm implements PostLoader {
         posts = new ArrayList<>();
         this.subreddit = subreddit;
         this.c = c;
-        this.force18 = force18;
+        this.force18 = false;
     }
 
     @Override

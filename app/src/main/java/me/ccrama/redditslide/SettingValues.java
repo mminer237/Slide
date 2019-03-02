@@ -86,9 +86,6 @@ public class SettingValues {
     public static final String PREF_COOKIES                   = "storeCookies";
     public static final String PREF_NIGHT_START               = "nightStart";
     public static final String PREF_NIGHT_END                 = "nightEnd";
-    public static final String PREF_SHOW_NSFW_CONTENT         = "showNSFWContent";
-    public static final String PREF_HIDE_NSFW_PREVIEW         = "hideNSFWPreviews";
-    public static final String PREF_HIDE_NSFW_COLLECTION      = "hideNSFWPreviewsCollection";
     public static final String PREF_IGNORE_SUB_SETTINGS       = "ignoreSub";
     public static final String PREF_HIGHLIGHT_TIME            = "highlightTime";
     public static final String PREF_MUTE                      = "muted";
@@ -273,8 +270,8 @@ public class SettingValues {
         timePeriod = TimePeriod.valueOf(settings.getString("timePeriod", "DAY"));
         defaultCommentSorting =
                 CommentSort.valueOf(settings.getString("defaultCommentSortingNew", "CONFIDENCE"));
-        showNSFWContent = prefs.getBoolean(PREF_SHOW_NSFW_CONTENT, false);
-        hideNSFWCollection = prefs.getBoolean(PREF_HIDE_NSFW_COLLECTION, true);
+        showNSFWContent = false;
+        hideNSFWCollection = true;
         ignoreSubSetting = prefs.getBoolean(PREF_IGNORE_SUB_SETTINGS, false);
 
         single = prefs.getBoolean(PREF_SINGLE, false);
@@ -359,7 +356,6 @@ public class SettingValues {
         cacheDefault = false;
         storeHistory = prefs.getBoolean(PREF_STORE_HISTORY, true);
         upvotePercentage = prefs.getBoolean(PREF_UPVOTE_PERCENTAGE, false);
-        storeNSFWHistory = prefs.getBoolean(PREF_STORE_NSFW_HISTORY, false);
         scrollSeen = prefs.getBoolean(PREF_SCROLL_SEEN, false);
         synccitName = prefs.getString(SYNCCIT_NAME, "");
         synccitAuth = prefs.getString(SYNCCIT_AUTH, "");
@@ -444,7 +440,7 @@ public class SettingValues {
     }
 
     public static boolean getIsNSFWEnabled() {
-        return prefs.getBoolean(PREF_HIDE_NSFW_PREVIEW + Authentication.name, true);
+        return false;
     }
 
     public static void resetSelftextEnabled(String subreddit) {

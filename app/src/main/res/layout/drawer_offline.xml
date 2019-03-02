@@ -177,15 +177,6 @@
                 android:textSize="14sp"/>
 
         <android.support.v7.widget.SwitchCompat
-                android:id="@+id/toggle_nsfw"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:paddingEnd="16dp"
-                android:paddingStart="24dp"
-                android:text="@string/toggle_nsfw"
-                android:textSize="14sp"/>
-
-        <android.support.v7.widget.SwitchCompat
                 android:id="@+id/toggle_right_thumbnails"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"

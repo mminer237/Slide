@@ -70,7 +70,6 @@ public class Settings extends BaseActivity
     private SettingsHandlingFragment     mSettingsHandlingFragment     = new SettingsHandlingFragment(this);
     private SettingsHistoryFragment      mSettingsHistoryFragment      = new SettingsHistoryFragment(this);
     private SettingsDataFragment         mSettingsDataFragment         = new SettingsDataFragment(this);
-    private SettingsRedditFragment       mSettingsRedditFragment       = new SettingsRedditFragment(this);
 
     private List<Integer> settings_activities = new ArrayList<>(
             Arrays.asList(
@@ -81,8 +80,7 @@ public class Settings extends BaseActivity
                     R.layout.activity_settings_comments_child,
                     R.layout.activity_settings_handling_child,
                     R.layout.activity_settings_history_child,
-                    R.layout.activity_settings_datasaving_child,
-                    R.layout.activity_settings_reddit_child
+                    R.layout.activity_settings_datasaving_child
             )
     );
 
@@ -209,7 +207,6 @@ public class Settings extends BaseActivity
             mSettingsHandlingFragment.Bind();
             mSettingsHistoryFragment.Bind();
             mSettingsDataFragment.Bind();
-            mSettingsRedditFragment.Bind();
 
             /* Go through each subview and scan it for matching text, non-matches */
             loopViews(parent, text.toLowerCase(), true, "");
@@ -633,19 +630,6 @@ public class Settings extends BaseActivity
                 Settings.this.startActivity(inte);
             }
         });
-
-        if (Authentication.isLoggedIn && NetworkUtil.isConnected(this)) {
-            findViewById(R.id.settings_child_reddit_settings).setOnClickListener(new OnSingleClickListener() {
-                @Override
-                public void onSingleClick(View v) {
-                    Intent i = new Intent(Settings.this, SettingsReddit.class);
-                    startActivity(i);
-                }
-            });
-        } else {
-            findViewById(R.id.settings_child_reddit_settings).setEnabled(false);
-            findViewById(R.id.settings_child_reddit_settings).setAlpha(0.25f);
-        }
 
         if (Authentication.mod) {
             findViewById(R.id.settings_child_moderation).setVisibility(View.VISIBLE);
