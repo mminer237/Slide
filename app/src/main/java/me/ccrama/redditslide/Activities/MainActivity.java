@@ -942,7 +942,7 @@ public class MainActivity extends BaseActivity
         boolean first = false;
         if (Reddit.colors != null && !Reddit.colors.contains("firstStart53")) {
             new AlertDialogWrapper.Builder(this).setTitle("Content settings have moved!")
-                    .setMessage("NSFW content is now disabled by default. If you are over the age of 18, to re-enable NSFW content, visit Settings > Content settings")
+                    .setMessage("NSFW content is now disabled.")
                     .setPositiveButton(R.string.btn_ok, null).setCancelable(false).show();
             Reddit.colors.edit().putBoolean("firstStart53", true).apply();
         }
@@ -3536,8 +3536,7 @@ public class MainActivity extends BaseActivity
                 .setMultiChoiceItems(new String[]{
                         getString(R.string.image_downloads), getString(R.string.type_albums),
                         getString(R.string.type_gifs), getString(R.string.type_videos),
-                        getString(R.string.type_links), getString(R.string.type_selftext),
-                        getString(R.string.type_nsfw_content)
+                        getString(R.string.type_links), getString(R.string.type_selftext)
                 }, chosen, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {

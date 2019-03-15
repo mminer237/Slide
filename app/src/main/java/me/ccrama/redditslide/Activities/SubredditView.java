@@ -1030,8 +1030,7 @@ public class SubredditView extends BaseActivity {
                 .setMultiChoiceItems(new String[]{
                         getString(R.string.image_downloads), getString(R.string.type_albums),
                         getString(R.string.type_gifs), getString(R.string.type_videos),
-                        getString(R.string.type_links), getString(R.string.type_selftext),
-                        getString(R.string.type_nsfw_content)
+                        getString(R.string.type_links), getString(R.string.type_selftext)
                 }, chosen, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
