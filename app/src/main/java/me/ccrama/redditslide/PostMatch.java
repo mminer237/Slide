@@ -106,7 +106,7 @@ public class PostMatch {
             domains = SettingValues.domainFilters.replaceAll("^[,\\s]+", "").split("[,\\s]+");
         }
         if (subreddits == null) {
-            subreddits = SettingValues.subredditFilters.replaceAll("^[,\\s]+", "").split("[,\\s]+");
+            subreddits = (SettingValues.subredditFilters+","+SettingValues.NSFW_SUBREDDIT_FILTERS).replaceAll("^[,\\s]+", "").split("[,\\s]+");
         }
         if (flairs == null) {
             flairs = SettingValues.flairFilters.replaceAll("^[,]+", "").split("[,]+");
@@ -131,7 +131,7 @@ public class PostMatch {
         }
         if (domainc) return true; // if domain hides it, no need to do any more
 
-        subredditc = !subreddit.equalsIgnoreCase(baseSubreddit) && !SettingValues.subredditFilters.isEmpty() && contains(subreddit.toLowerCase(Locale.ENGLISH), subreddits, true);
+        subredditc = !subreddit.equalsIgnoreCase(baseSubreddit) && contains(subreddit.toLowerCase(Locale.ENGLISH), subreddits, true);
         if (subredditc) return true; // if subreddit hides it, no need to do any more
 
         boolean contentMatch = false;
@@ -151,15 +151,7 @@ public class PostMatch {
 
 
         if (s.isNsfw()) {
-            if (!SettingValues.showNSFWContent) {
-                contentMatch = true;
-            }
-            if(ignore18){
-                contentMatch = false;
-            }
-            if (nsfw) {
-                contentMatch = true;
-            }
+            contentMatch = true;
         }
         switch (ContentType.getContentType(s)) {
             case REDDIT:
@@ -239,7 +231,7 @@ public class PostMatch {
             domains = SettingValues.domainFilters.replaceAll("^[,\\s]+", "").split("[,\\s]+");
         }
         if (subreddits == null) {
-            subreddits = SettingValues.subredditFilters.replaceAll("^[,\\s]+", "").split("[,\\s]+");
+            subreddits = (SettingValues.subredditFilters+","+SettingValues.NSFW_SUBREDDIT_FILTERS).replaceAll("^[,\\s]+", "").split("[,\\s]+");
         }
 
         titlec = !SettingValues.titleFilters.isEmpty() && contains(title.toLowerCase(Locale.ENGLISH), titles, false);
@@ -248,7 +240,7 @@ public class PostMatch {
 
         domainc = !SettingValues.domainFilters.isEmpty() && contains(domain.toLowerCase(Locale.ENGLISH), domains, false);
 
-        subredditc = subreddit != null && !subreddit.isEmpty() && !SettingValues.subredditFilters.isEmpty() && contains(subreddit.toLowerCase(Locale.ENGLISH), subreddits, true);
+        subredditc = subreddit != null && !subreddit.isEmpty() && contains(subreddit.toLowerCase(Locale.ENGLISH), subreddits, true);
 
         return (titlec || bodyc || domainc || subredditc);
     }
@@ -259,7 +251,6 @@ public class PostMatch {
         e.putBoolean(subreddit + "_gifsFilter", values[2]);
         e.putBoolean(subreddit + "_albumsFilter", values[1]);
         e.putBoolean(subreddit + "_imagesFilter", values[0]);
-        e.putBoolean(subreddit + "_nsfwFilter", values[6]);
         e.putBoolean(subreddit + "_selftextFilter", values[5]);
         e.putBoolean(subreddit + "_urlsFilter", values[4]);
         e.putBoolean(subreddit + "_videoFilter", values[3]);

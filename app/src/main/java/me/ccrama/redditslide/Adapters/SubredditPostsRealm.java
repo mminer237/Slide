@@ -459,11 +459,14 @@ public class SubredditPostsRealm implements PostLoader {
                 }
 
 
-                for (Submission s : adding) {
-                    if (!PostMatch.doesMatch(s, paginator instanceof SubredditPaginator
-                            ? ((SubredditPaginator) paginator).getSubreddit()
-                            : ((DomainPaginator) paginator).getDomain(), force18)) {
-                        filteredSubmissions.add(s);
+                String subredditOrDomain = paginator instanceof SubredditPaginator
+                        ? ((SubredditPaginator) paginator).getSubreddit()
+                        : ((DomainPaginator) paginator).getDomain();
+                if (!PostMatch.contains(subredditOrDomain.toLowerCase(Locale.ENGLISH), PostMatch.subreddits, true)) {
+                    for (Submission s : adding) {
+                        if (!PostMatch.doesMatch(s, subredditOrDomain, force18)) {
+                            filteredSubmissions.add(s);
+                        }
                     }
                 }
                 if (paginator != null && paginator.hasNext() && filteredSubmissions.isEmpty()) {

@@ -80,7 +80,7 @@ public class SubredditNames {
             if (submissions != null && !submissions.isEmpty()) {
                 ArrayList<Subreddit> toRemove = new ArrayList<>();
                 for (Subreddit s : submissions) {
-                    if (!SettingValues.subredditFilters.isEmpty() && PostMatch.contains(s.getDisplayName().toLowerCase(
+                    if (PostMatch.contains(s.getDisplayName().toLowerCase(
                             Locale.ENGLISH), PostMatch.subreddits, true))
                         toRemove.add(s);
                 }
@@ -114,7 +114,7 @@ public class SubredditNames {
 
             List<Subreddit> things = new ArrayList<>();
             if (PostMatch.subreddits == null)
-                PostMatch.subreddits = SettingValues.subredditFilters.replaceAll("^[,\\s]+", "").split("[,\\s]+");
+                PostMatch.subreddits = (SettingValues.subredditFilters+","+SettingValues.NSFW_SUBREDDIT_FILTERS).replaceAll("^[,\\s]+", "").split("[,\\s]+");
 
             try {
             if (subredditPaginators[0].equalsIgnoreCase("trending")) {

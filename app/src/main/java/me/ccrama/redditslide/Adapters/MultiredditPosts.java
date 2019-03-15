@@ -321,9 +321,11 @@ public class MultiredditPosts implements PostLoader {
                 final OfflineSubreddit cached = OfflineSubreddit.getSubreddit("multi" + multiReddit.getDisplayName().toLowerCase(Locale.ENGLISH), true, context);
 
                 List<Submission> finalSubs = new ArrayList<>();
-                for (Submission s : cached.submissions) {
-                    if (!PostMatch.doesMatch(s, "multi" + multiReddit.getDisplayName().toLowerCase(Locale.ENGLISH), false)) {
-                        finalSubs.add(s);
+                if (!PostMatch.contains("multi" + multiReddit.getDisplayName().toLowerCase(Locale.ENGLISH), PostMatch.subreddits, true)) {
+                    for (Submission s : cached.submissions) {
+                        if (!PostMatch.doesMatch(s, "multi" + multiReddit.getDisplayName().toLowerCase(Locale.ENGLISH), false)) {
+                            finalSubs.add(s);
+                        }
                     }
                 }
 
@@ -380,9 +382,11 @@ public class MultiredditPosts implements PostLoader {
             }
 
             List<Submission> filteredSubmissions = new ArrayList<>();
-            for (Submission s : things) {
-                if (!PostMatch.doesMatch(s, paginator.getMultiReddit().getDisplayName(), false)) {
-                    filteredSubmissions.add(s);
+            if (!PostMatch.contains(paginator.getMultiReddit().getDisplayName().toLowerCase(Locale.ENGLISH), PostMatch.subreddits, true)) {
+                for (Submission s : things) {
+                    if (!PostMatch.doesMatch(s, paginator.getMultiReddit().getDisplayName(), false)) {
+                        filteredSubmissions.add(s);
+                    }
                 }
             }
 
