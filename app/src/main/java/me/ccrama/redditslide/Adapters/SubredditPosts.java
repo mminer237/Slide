@@ -375,6 +375,8 @@ public class SubredditPosts implements PostLoader {
             } else if (MainActivity.isRestart) {
                 posts = new ArrayList<>();
                 cached = OfflineSubreddit.getSubreddit(subreddit, 0L, true, c);
+                if (PostMatch.subreddits == null)
+                    PostMatch.subreddits = (SettingValues.subredditFilters+","+SettingValues.NSFW_SUBREDDIT_FILTERS).replaceAll("^[,\\s]+", "").split("[,\\s]+");
                 if (!PostMatch.contains(subreddit.toLowerCase(Locale.ENGLISH), PostMatch.subreddits, true)) {
                     for (Submission s : cached.submissions) {
                         if (!PostMatch.doesMatch(s, subreddit, force18)) {
@@ -485,14 +487,11 @@ public class SubredditPosts implements PostLoader {
                     nomore = true;
                 }
 
-                String subredditOrDomain = paginator instanceof SubredditPaginator
-                        ? ((SubredditPaginator) paginator).getSubreddit()
-                        : ((DomainPaginator) paginator).getDomain();
-                if (!PostMatch.contains(subredditOrDomain.toLowerCase(Locale.ENGLISH), PostMatch.subreddits, true)) {
-                    for (Submission s : adding) {
-                        if (!PostMatch.doesMatch(s, subredditOrDomain, force18)) {
-                            filteredSubmissions.add(s);
-                        }
+                for (Submission s : adding) {
+                    if (!PostMatch.doesMatch(s, paginator instanceof SubredditPaginator
+                            ? ((SubredditPaginator) paginator).getSubreddit()
+                            : ((DomainPaginator) paginator).getDomain(), force18)) {
+                        filteredSubmissions.add(s);
                     }
                 }
                 if (paginator != null && paginator.hasNext() && filteredSubmissions.isEmpty()) {
@@ -553,6 +552,8 @@ public class SubredditPosts implements PostLoader {
                                         cached = OfflineSubreddit.getSubreddit(subreddit,
                                                 Long.valueOf(s2[1]), true, c);
                                         List<Submission> finalSubs = new ArrayList<>();
+                                        if (PostMatch.subreddits == null)
+                                            PostMatch.subreddits = (SettingValues.subredditFilters+","+SettingValues.NSFW_SUBREDDIT_FILTERS).replaceAll("^[,\\s]+", "").split("[,\\s]+");
                                         if (!PostMatch.contains(subreddit.toLowerCase(Locale.ENGLISH), PostMatch.subreddits, true)) {
                                             for (Submission s : cached.submissions) {
                                                 if (!PostMatch.doesMatch(s, subreddit, force18)) {
