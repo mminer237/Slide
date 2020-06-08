@@ -337,6 +337,9 @@ public class MainActivity extends BaseActivity
                 == Constants.BackButtonBehaviorOptions.OpenDrawer.getValue()) {
             drawerLayout.openDrawer(Gravity.START);
         } else if (SettingValues.backButtonBehavior
+                == Constants.BackButtonBehaviorOptions.GotoFirst.getValue()) {
+            pager.setCurrentItem(0);
+        } else if (SettingValues.backButtonBehavior
                 == Constants.BackButtonBehaviorOptions.ConfirmExit.getValue()) {
             final AlertDialogWrapper.Builder builder =
                     new AlertDialogWrapper.Builder(MainActivity.this);
@@ -2250,9 +2253,8 @@ public class MainActivity extends BaseActivity
     }
 
     public void doForcePrefs() {
-        ArrayList<String> domains = new ArrayList<>();
-
-        for (String s : SettingValues.alwaysExternal.replaceAll("^[,\\s]+", "").split("[,\\s]+")) {
+        HashSet<String> domains = new HashSet<>();
+        for (String s : SettingValues.alwaysExternal) {
             if (!s.isEmpty()) {
                 s = s.trim();
                 final String finalS = s;
@@ -2265,13 +2267,11 @@ public class MainActivity extends BaseActivity
         domains.add("youtu.be");
         domains.add("play.google.com");
 
-        SharedPreferences.Editor e = SettingValues.prefs.edit();
-        e.putString(SettingValues.PREF_ALWAYS_EXTERNAL, Reddit.arrayToString(domains));
-        e.apply();
-        PostMatch.externalDomain = null;
+        SettingValues.prefs.edit()
+                .putStringSet(SettingValues.PREF_ALWAYS_EXTERNAL, domains)
+                .apply();
 
-        SettingValues.alwaysExternal =
-                SettingValues.prefs.getString(SettingValues.PREF_ALWAYS_EXTERNAL, "");
+        SettingValues.alwaysExternal = domains;
     }
 
     public void doFriends(final List<String> friends) {
@@ -2850,6 +2850,15 @@ public class MainActivity extends BaseActivity
                             (ImageView) findViewById(R.id.subimage));
         } else {
             findViewById(R.id.subimage).setVisibility(View.GONE);
+        }
+        String bannerImage = subreddit.getBannerImage();
+        if (bannerImage != null && !bannerImage.isEmpty()) {
+            findViewById(R.id.sub_banner).setVisibility(View.VISIBLE);
+            ((Reddit) getApplication()).getImageLoader()
+                    .displayImage(bannerImage,
+                            (ImageView) findViewById(R.id.sub_banner));
+        } else {
+            findViewById(R.id.sub_banner).setVisibility(View.GONE);
         }
         ((TextView) findViewById(R.id.subscribers)).setText(
                 getString(R.string.subreddit_subscribers_string,

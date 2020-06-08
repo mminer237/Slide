@@ -48,6 +48,7 @@ public class ContentType {
 
             return hostContains(host, "gfycat.com")
                     || hostContains(host, "v.redd.it")
+                    || hostContains(host, "redgifs.com")
                     || path.endsWith(".gif")
                     || path.endsWith(".gifv")
                     || path.endsWith(".webm")
@@ -241,12 +242,12 @@ public class ContentType {
         final Type basicType = getContentType(url);
 
         // TODO: Decide whether internal youtube links should be EMBEDDED or LINK
-        if (basicType.equals(Type.LINK) && submission.getDataNode().has("media_embed") && submission
+        /* Disable this for nowif (basicType.equals(Type.LINK) && submission.getDataNode().has("media_embed") && submission
                 .getDataNode()
                 .get("media_embed")
                 .has("content")) {
             return Type.EMBEDDED;
-        }
+        }*/
 
         return basicType;
     }

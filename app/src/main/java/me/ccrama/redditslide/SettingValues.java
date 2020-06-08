@@ -10,8 +10,7 @@ import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.TimePeriod;
 
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Created by ccrama on 9/19/2015.
@@ -35,6 +34,7 @@ public class SettingValues {
     public static final String PREF_ALPHABETIZE_SUBSCRIBE     = "alphabetizeSubscribe";
     public static final String PREF_COLOR_BACK                = "colorBack";
     public static final String PREF_IMAGE_SUBFOLDERS          = "imageSubfolders";
+    public static final String PREF_IMAGE_DOWNLOAD_BUTTON     = "imageDownloadButton";
     public static final String PREF_COLOR_NAV_BAR             = "colorNavBar";
     public static final String PREF_READER_MODE               = "readerDefault";
     public static final String PREF_READER_NIGHT              = "readernight";
@@ -195,13 +195,15 @@ public class SettingValues {
     public static String synccitName;
     public static String synccitAuth;
 
-    public static String  titleFilters;
-    public static String  textFilters;
-    public static String  domainFilters;
+    public static Set<String>   titleFilters;
+    public static Set<String>   textFilters;
+    public static Set<String>   domainFilters;
     public static final String NSFW_SUBREDDIT_FILTERS = "alexandradaddario,alexandriamorgan,alissaviolet,alysonhannigan,amanda_seyfried,amber_heard,amyadams,annakendrick,arianagrande,ashleybenson,ashleygreene,aubreyplaza,audreyhepburn,barbarapalvin,beautifulfemales,bikinisonshow,blackhairedgirls,blakelively,bravo_girls,cameronrorrison,camilamorrone,carmellarose,celeb_redheads,celebhub,celebs,celebsonshow,celestebright,celinefarach,charlyjordan,cheerleaders,chloegracemoretz,christenharper,christinahendricks,christinaricci,cindykimberly,claraalonso,classicbabes,classicscreenbeauties,classywomenofcolor,cobiesmulders,dakotafanning,daniellagrace,dashadereviankina,deniseschaefer,diannaagron,diosas,elizabethturner,elizabethzaks,ellenpage,elsiehewitt,emiliaclarke,emilyblunt,emmastone,emmawatson,evagreen,evangelinelilly,fashionmodels,fineladies,freckledgirls,gabbyepstein,geekboners,gentlemanboners,gentlemangabers,giaradionova,girls_smiling,gmbwallpapers,goddesses,gonemild,graceelizabeth,haileelautenbach,hannaedwinson,haydenpanettiere,hayleywilliams,imogenpoots,indiancelebs,instagram_girls,instathots,internetstars,janelevy,jasmine_tookes,jennafischer,jenniferaniston,jenniferlawrence,jessica_clements,jessicaalba,jessicabiel,julimery,kaleycuoco,karadeltoro,karengillan,kassismith,katebeckinsale,katyperry,kaylajones,keilahkang,keiraknightley,kelly_gale,kendalljenner,kirstendunst,kristen_stewart,kristenbell,kyra_santoro,ladakravchenko,ladyboners,ladygaga,ladyontheroad,laisribeiro,laurencohan,laurenlayne,leamichele,lorenarae,luizafreyesleben,lyndsyfonseca,madelineford,marinalaswick,matureladyboners,meganfox,melanieiglesias,melanielaurent,micheacrawford,michele_maturo,michelletrachtenberg,mila_kunis,mileycyrus,millajovovich,models,modelsgonemild,natalidanish,nataliedormer,natalieroser,nicolacavanis,nina_agdal,ninadobrev,nonnudebeauties,nsfwcelebrities,oliviamunn,oliviapickren,oliviawilde,petitebeauties,prettycowgirls,prettygirls,prettyolderwomen,rachelcook,rachelmcadams,randomsexygifs,reneemurden,rosariodawson,sarahhyland,sarahrosemcdaniel,sarahsnyder,sarahstephens,sarajunderwood,sarasampaio,savvytaylor,scarlettjohansson,scarlettleithold,selenagomez,sexycelebfemales,sexycelebs,sexygirls,sexyhair,sexywomanoftheday,sfwredheads,shelbybay,shortykeepingittight,sierra_skye,skinnywithabs,sofiajamora,sofiavergara,sophiknight,stephanierayner,stephclairesmith,summerglau,susancoffey,taylorhannum,taylormariehill,triangl,u_badabongo,u_millertime8202,u_walkedruddy,vanessahudgens,vanessamoe,veronica_zoppolo,victoriajustice,vikabronova,wallisday,wallpapernsfw,womenwithwatches,wrestlewiththeplot,ythotgirlslive,yuliarose,yvonnestrahovski,zooeydeschanel";
-    public static String  subredditFilters;
-    public static String  flairFilters;
-    public static String  alwaysExternal;
+    public static Set<String>   subredditFilters;
+    public static Set<String>   flairFilters;
+    public static Set<String>   alwaysExternal;
+    public static Set<String>   userFilters;
+
     public static boolean loadImageLq;
     public static boolean ignoreSubSetting;
     public static boolean hideNSFWCollection;
@@ -217,6 +219,7 @@ public class SettingValues {
     public static boolean singleColumnMultiWindow;
     public static int nightModeState;
     public static boolean imageSubfolders;
+    public static boolean imageDownloadButton;
     public static boolean autoTime;
     public static boolean albumSwipe;
     public static boolean switchThumb;
@@ -236,7 +239,6 @@ public class SettingValues {
     public static int     currentTheme; //current base theme (Light, Dark, Dark blue, etc.)
     public static int     nightTheme;
     public static boolean typeInText;
-    public static String  userFilters;
     public static boolean notifSound;
     public static boolean cookies;
     public static boolean colorIcon;
@@ -283,6 +285,7 @@ public class SettingValues {
         largeDepth = prefs.getBoolean(PREF_LARGE_DEPTH, false);
         readerMode = prefs.getBoolean(PREF_READER_MODE, false);
         imageSubfolders = prefs.getBoolean(PREF_IMAGE_SUBFOLDERS, false);
+        imageDownloadButton = prefs.getBoolean(PREF_IMAGE_DOWNLOAD_BUTTON, true);
         isMuted = prefs.getBoolean(PREF_MUTE, false);
 
         commentVolumeNav = prefs.getBoolean(PREF_COMMENT_NAV, false);
@@ -370,14 +373,17 @@ public class SettingValues {
         nightEnd = prefs.getInt(PREF_NIGHT_END, 5);
 
         fabComments = prefs.getBoolean(PREF_COMMENT_FAB, false);
-        titleFilters = prefs.getString(PREF_TITLE_FILTERS, "");
-        textFilters = prefs.getString(PREF_TEXT_FILTERS, "");
-        domainFilters = prefs.getString(PREF_DOMAIN_FILTERS, "");
-        subredditFilters = prefs.getString(PREF_SUBREDDIT_FILTERS, "");
-        alwaysExternal = prefs.getString(SettingValues.PREF_ALWAYS_EXTERNAL, "");
-        flairFilters = prefs.getString(PREF_FLAIR_FILTERS, "");
-        userFilters = prefs.getString(PREF_USER_FILTERS, "");
         largeLinks = prefs.getBoolean(PREF_LARGE_LINKS, false);
+
+        // SharedPreferences' StringSets should never be modified, so we duplicate them into a new HashSet
+        titleFilters = new HashSet<>(prefs.getStringSet(PREF_TITLE_FILTERS, new HashSet<>()));
+        textFilters = new HashSet<>(prefs.getStringSet(PREF_TEXT_FILTERS, new HashSet<>()));
+        domainFilters = new HashSet<>(prefs.getStringSet(PREF_DOMAIN_FILTERS, new HashSet<>()));
+        subredditFilters = new HashSet<>(prefs.getStringSet(PREF_SUBREDDIT_FILTERS, new HashSet<>()));
+        subredditFilters.addAll(Arrays.asList(NSFW_SUBREDDIT_FILTERS.split(",")));
+        alwaysExternal = new HashSet<>(prefs.getStringSet(PREF_ALWAYS_EXTERNAL, new HashSet<>()));
+        flairFilters = new HashSet<>(prefs.getStringSet(PREF_FLAIR_FILTERS, new HashSet<>()));
+        userFilters = new HashSet<>(prefs.getStringSet(PREF_USER_FILTERS, new HashSet<>()));
 
         dualPortrait = prefs.getBoolean(PREF_DUAL_PORTRAIT, false);
         singleColumnMultiWindow = prefs.getBoolean(PREF_SINGLE_COLUMN_MULTI, false);

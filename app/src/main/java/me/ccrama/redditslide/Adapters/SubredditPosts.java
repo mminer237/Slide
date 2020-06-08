@@ -375,13 +375,9 @@ public class SubredditPosts implements PostLoader {
             } else if (MainActivity.isRestart) {
                 posts = new ArrayList<>();
                 cached = OfflineSubreddit.getSubreddit(subreddit, 0L, true, c);
-                if (PostMatch.subreddits == null)
-                    PostMatch.subreddits = (SettingValues.subredditFilters+","+SettingValues.NSFW_SUBREDDIT_FILTERS).replaceAll("^[,\\s]+", "").split("[,\\s]+");
-                if (!PostMatch.contains(subreddit.toLowerCase(Locale.ENGLISH), PostMatch.subreddits, true)) {
-                    for (Submission s : cached.submissions) {
-                        if (!PostMatch.doesMatch(s, subreddit, force18)) {
-                            posts.add(s);
-                        }
+                for (Submission s : cached.submissions) {
+                    if (!PostMatch.doesMatch(s, subreddit, force18)) {
+                        posts.add(s);
                     }
                 }
                 offline = false;
@@ -552,13 +548,9 @@ public class SubredditPosts implements PostLoader {
                                         cached = OfflineSubreddit.getSubreddit(subreddit,
                                                 Long.valueOf(s2[1]), true, c);
                                         List<Submission> finalSubs = new ArrayList<>();
-                                        if (PostMatch.subreddits == null)
-                                            PostMatch.subreddits = (SettingValues.subredditFilters+","+SettingValues.NSFW_SUBREDDIT_FILTERS).replaceAll("^[,\\s]+", "").split("[,\\s]+");
-                                        if (!PostMatch.contains(subreddit.toLowerCase(Locale.ENGLISH), PostMatch.subreddits, true)) {
-                                            for (Submission s : cached.submissions) {
-                                                if (!PostMatch.doesMatch(s, subreddit, force18)) {
-                                                    finalSubs.add(s);
-                                                }
+                                        for (Submission s : cached.submissions) {
+                                            if (!PostMatch.doesMatch(s, subreddit, force18)) {
+                                                finalSubs.add(s);
                                             }
                                         }
 
