@@ -123,7 +123,7 @@ public class PostMatch {
         boolean videos = isVideo(baseSubreddit);
 
 
-        if (s.isNsfw()) {
+        if (s.isNsfw() || nsfw) {
             contentMatch = true;
         }
         switch (ContentType.getContentType(s)) {
