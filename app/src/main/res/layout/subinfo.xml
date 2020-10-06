@@ -140,7 +140,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_alignTop="@+id/subscribe"
                             android:padding="4dp"
-                            android:src="@drawable/collection"
+                            app:srcCompat="@drawable/collection"
                             android:theme="@style/Ripple.List"
                             android:tint="?attr/tintColor"/>
                 </RelativeLayout>
@@ -151,7 +151,7 @@
                         android:background="?android:selectableItemBackground"
                         android:orientation="horizontal">
 
-                    <android.support.v7.widget.AppCompatCheckBox
+                    <androidx.appcompat.widget.AppCompatCheckBox
                             android:id="@+id/notify_posts_state"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -317,7 +317,7 @@
                             android:layout_height="48dp"
                             android:padding="12dp"
                             android:tint="?attr/tintColor"
-                            app:srcCompat="@drawable/fontsizedarker"/>
+                            app:srcCompat="@drawable/fontsize"/>
 
                     <TextView
                             android:id="@+id/flair_text"

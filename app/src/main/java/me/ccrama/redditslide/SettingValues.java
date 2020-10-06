@@ -2,15 +2,20 @@ package me.ccrama.redditslide;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import me.ccrama.redditslide.Fragments.SettingsHandlingFragment;
-import me.ccrama.redditslide.Views.CreateCardView;
-import me.ccrama.redditslide.Visuals.Palette;
-import me.ccrama.redditslide.util.SortingUtil;
+
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.paginators.Sorting;
 import net.dean.jraw.paginators.TimePeriod;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
+import me.ccrama.redditslide.Fragments.SettingsHandlingFragment;
+import me.ccrama.redditslide.Views.CreateCardView;
+import me.ccrama.redditslide.Visuals.Palette;
+import me.ccrama.redditslide.util.SortingUtil;
 
 /**
  * Created by ccrama on 9/19/2015.
@@ -22,7 +27,7 @@ public class SettingValues {
     public static final String PREF_FAB_TYPE                  = "FabType";
     public static final String PREF_DAY_TIME                  = "day";
     public static final String PREF_VOTE_GESTURES             = "voteGestures";
-    public static final String PREF_NIGHT_MODE_STATE = "nightModeState";
+    public static final String PREF_NIGHT_MODE_STATE          = "nightModeState";
     public static final String PREF_NIGHT_MODE                = "nightMode";
     public static final String PREF_NIGHT_THEME               = "nightTheme";
     public static final String PREF_TYPE_IN_TEXT              = "typeInText";
@@ -61,6 +66,7 @@ public class SettingValues {
     public static final String PREF_COMMENT_PAGER             = "commentPager";
     public static final String PREF_COLLAPSE_COMMENTS         = "collapseCOmments";
     public static final String PREF_COLLAPSE_COMMENTS_DEFAULT = "collapseCommentsDefault";
+    public static final String PREF_COLLAPSE_DELETED_COMMENTS = "collapseDeletedComments";
     public static final String PREF_RIGHT_HANDED_COMMENT_MENU = "rightHandedCommentMenu";
     public static final String PREF_DUAL_PORTRAIT             = "dualPortrait";
     public static final String PREF_SINGLE_COLUMN_MULTI       = "singleColumnMultiWindow";
@@ -68,6 +74,7 @@ public class SettingValues {
     public static final String PREF_COMMENT_FAB               = "commentFab";
     public static final String PREF_SWITCH_THUMB              = "switchThumb";
     public static final String PREF_BIG_THUMBS                = "bigThumbnails";
+    public static final String PREF_NO_THUMB                  = "noThumbnails";
     public static final String PREF_LOW_RES_ALWAYS            = "lowResAlways";
     public static final String PREF_LOW_RES_MOBILE            = "lowRes";
     public static final String PREF_IMAGE_LQ                  = "imageLq";
@@ -82,6 +89,7 @@ public class SettingValues {
     public static final String PREF_LQ_LOW                    = "lqLow";
     public static final String PREF_LQ_MID                    = "lqMid";
     public static final String PREF_LQ_HIGH                   = "lqHigh";
+    public static final String PREF_LQ_VIDEOS                 = "lqVideos";
     public static final String PREF_SOUND_NOTIFS              = "soundNotifs";
     public static final String PREF_COOKIES                   = "storeCookies";
     public static final String PREF_NIGHT_START               = "nightStart";
@@ -124,6 +132,7 @@ public class SettingValues {
     public static final String PREF_MOD_TOOLBOX_STICKY     = "toolboxSticky";
     public static final String PREF_MOD_TOOLBOX_LOCK       = "toolboxLock";
     public static final String PREF_MOD_TOOLBOX_MODMAIL    = "toolboxModmail";
+    public static final String PREF_ALWAYS_SHOW_FAB        = "alwaysShowFAB";
 
     public static CreateCardView.CardEnum defaultCardView;
     public static Sorting                 defaultSorting;
@@ -180,6 +189,7 @@ public class SettingValues {
     public static boolean readerMode;
     public static boolean collapseComments;
     public static boolean collapseCommentsDefault;
+    public static boolean collapseDeletedComments;
     public static boolean rightHandedCommentMenu;
     public static boolean abbreviateScores;
     public static boolean shareLongLink;
@@ -224,6 +234,7 @@ public class SettingValues {
     public static boolean albumSwipe;
     public static boolean switchThumb;
     public static boolean bigThumbnails;
+    public static boolean noThumbnails;
     public static boolean commentPager;
     public static boolean alphabetizeOnSubscribe;
     public static boolean colorSubName;
@@ -236,6 +247,7 @@ public class SettingValues {
     public static boolean lqLow  = false;
     public static boolean lqMid  = true;
     public static boolean lqHigh = false;
+    public static boolean lqVideos;
     public static int     currentTheme; //current base theme (Light, Dark, Dark blue, etc.)
     public static int     nightTheme;
     public static boolean typeInText;
@@ -255,6 +267,7 @@ public class SettingValues {
     public static boolean toolboxSticky;
     public static boolean toolboxLock;
     public static boolean toolboxModmail;
+    public static boolean alwaysShowFAB;
 
     public static void setAllValues(SharedPreferences settings) {
         prefs = settings;
@@ -264,6 +277,8 @@ public class SettingValues {
 
         bigPicCropped = settings.getBoolean("bigPicCropped", true);
         bigPicEnabled = settings.getBoolean("bigPicEnabled", true);
+
+        alwaysShowFAB=settings.getBoolean("alwaysShowFAB",false);
 
         colorMatchingMode = ColorMatchingMode.valueOf(
                 settings.getString("ccolorMatchingModeNew", "MATCH_EXTERNALLY"));
@@ -312,7 +327,7 @@ public class SettingValues {
 
         // TODO: Remove the old pref check in a later version
         // This handles forward migration from the old night_mode boolean state
-        nightModeState = prefs.getInt(PREF_NIGHT_MODE_STATE, prefs.getBoolean(PREF_NIGHT_MODE, false) ? NightModeState.MANUAL.ordinal() : NightModeState.DISABLED.ordinal());
+        nightModeState = prefs.getInt(PREF_NIGHT_MODE_STATE, (prefs.getBoolean(PREF_NIGHT_MODE, false) ? NightModeState.MANUAL : NightModeState.DISABLED).ordinal());
         nightTheme = prefs.getInt(PREF_NIGHT_THEME, 0);
         autoTime = prefs.getBoolean(PREF_AUTOTHEME, false);
         colorBack = prefs.getBoolean(PREF_COLOR_BACK, false);
@@ -324,6 +339,7 @@ public class SettingValues {
         alwaysZoom = prefs.getBoolean(PREF_ZOOM_DEFAULT, true);
         collapseComments = prefs.getBoolean(PREF_COLLAPSE_COMMENTS, false);
         collapseCommentsDefault = prefs.getBoolean(PREF_COLLAPSE_COMMENTS_DEFAULT, false);
+        collapseDeletedComments = prefs.getBoolean(PREF_COLLAPSE_DELETED_COMMENTS, false);
         rightHandedCommentMenu = prefs.getBoolean(PREF_RIGHT_HANDED_COMMENT_MENU, false);
         commentAutoHide = prefs.getBoolean(PREF_AUTOHIDE_COMMENTS, false);
         showCollapseExpand = prefs.getBoolean(PREF_SHOW_COLLAPSE_EXPAND, false);
@@ -336,6 +352,7 @@ public class SettingValues {
         lqLow = prefs.getBoolean(PREF_LQ_LOW, false);
         lqMid = prefs.getBoolean(PREF_LQ_MID, true);
         lqHigh = prefs.getBoolean(PREF_LQ_HIGH, false);
+        lqVideos = prefs.getBoolean(PREF_LQ_VIDEOS, true);
 
         noImages = prefs.getBoolean(PREF_NO_IMAGES, false);
 
@@ -392,6 +409,7 @@ public class SettingValues {
         cropImage = prefs.getBoolean(PREF_CROP_IMAGE, true);
         switchThumb = prefs.getBoolean(PREF_SWITCH_THUMB, true);
         bigThumbnails = prefs.getBoolean(PREF_BIG_THUMBS, false);
+        noThumbnails = prefs.getBoolean(PREF_NO_THUMB, false);
 
         swipeAnywhere = true; //override this always now
         album = prefs.getBoolean(PREF_ALBUM, true);
@@ -525,8 +543,7 @@ public class SettingValues {
             }
 
             // unset forced state if forcing is now unnecessary - allows for normal night mode on/off transitions
-            if ((night && forcedNightModeState == ForcedState.FORCED_ON)
-                    || (!night && forcedNightModeState == ForcedState.FORCED_OFF)) {
+            if (forcedNightModeState == (night ? ForcedState.FORCED_ON : ForcedState.FORCED_OFF)) {
                 forcedNightModeState = ForcedState.NOT_FORCED;
             }
 

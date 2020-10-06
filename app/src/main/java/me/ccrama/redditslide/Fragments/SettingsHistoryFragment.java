@@ -1,9 +1,10 @@
 package me.ccrama.redditslide.Fragments;
 
 import android.app.Activity;
-import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
+
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.lusfold.androidkeyvaluestore.KVStore;
@@ -22,7 +23,7 @@ public class SettingsHistoryFragment {
 
     public void Bind() {
         {
-            SwitchCompat storeHistory = ((SwitchCompat) context.findViewById(R.id.settings_history_storehistory));
+            SwitchCompat storeHistory = context.findViewById(R.id.settings_history_storehistory);
             storeHistory.setChecked(SettingValues.storeHistory);
             storeHistory.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -34,7 +35,7 @@ public class SettingsHistoryFragment {
                         context.findViewById(R.id.settings_history_scrollseen).setEnabled(true);
                     } else {
                         ((SwitchCompat) context.findViewById(R.id.settings_history_scrollseen)).setChecked(false);
-                        ((SwitchCompat) context.findViewById(R.id.settings_history_scrollseen)).setEnabled(false);
+                        context.findViewById(R.id.settings_history_scrollseen).setEnabled(false);
                         SettingValues.scrollSeen = false;
                         SettingValues.prefs.edit().putBoolean(SettingValues.PREF_SCROLL_SEEN, false).apply();
                     }
@@ -59,7 +60,7 @@ public class SettingsHistoryFragment {
         });
 
         {
-            SwitchCompat single = (SwitchCompat) context.findViewById(R.id.settings_history_scrollseen);
+            SwitchCompat single = context.findViewById(R.id.settings_history_scrollseen);
             single.setChecked(SettingValues.scrollSeen);
             single.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

@@ -3,7 +3,8 @@ package me.ccrama.redditslide.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
+
+import androidx.core.content.ContextCompat;
 
 import me.ccrama.redditslide.Reddit;
 
@@ -27,15 +28,14 @@ public class NetworkUtil {
      * @return A non-null value defined in {@link Status}
      */
     public static Status getConnectivityStatus(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = ContextCompat.getSystemService(context, ConnectivityManager.class);
 
+        assert cm != null;
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         switch (activeNetwork != null ? activeNetwork.getType() : CONST_NO_NETWORK) {
             case ConnectivityManager.TYPE_WIFI: case ConnectivityManager.TYPE_ETHERNET:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    if (cm.isActiveNetworkMetered())
-                        return Status.MOBILE; // respect metered wifi networks as mobile
+                if (cm.isActiveNetworkMetered())
+                    return Status.MOBILE; // respect metered wifi networks as mobile
                 return Status.WIFI;
             case ConnectivityManager.TYPE_MOBILE: case ConnectivityManager.TYPE_BLUETOOTH: case ConnectivityManager.TYPE_WIMAX:
                 return Status.MOBILE;

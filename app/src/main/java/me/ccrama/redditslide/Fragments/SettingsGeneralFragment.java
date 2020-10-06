@@ -8,12 +8,6 @@ import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.PopupMenu;
-import android.support.v7.widget.SwitchCompat;
-import android.text.Spannable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,12 +16,17 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.SwitchCompat;
+
 import com.afollestad.materialdialogs.AlertDialogWrapper;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.rey.material.widget.Slider;
 
-import me.ccrama.redditslide.*;
 import net.dean.jraw.models.CommentSort;
 import net.dean.jraw.models.Subreddit;
 import net.dean.jraw.paginators.Sorting;
@@ -41,9 +40,17 @@ import java.util.List;
 import java.util.Locale;
 
 import me.ccrama.redditslide.Activities.SettingsViewType;
+import me.ccrama.redditslide.Authentication;
+import me.ccrama.redditslide.CaseInsensitiveArrayList;
+import me.ccrama.redditslide.Constants;
 import me.ccrama.redditslide.Fragments.FolderChooserDialogCreate.FolderCallback;
 import me.ccrama.redditslide.Notifications.CheckForMail;
 import me.ccrama.redditslide.Notifications.NotificationJobScheduler;
+import me.ccrama.redditslide.R;
+import me.ccrama.redditslide.Reddit;
+import me.ccrama.redditslide.SettingValues;
+import me.ccrama.redditslide.TimeUtils;
+import me.ccrama.redditslide.UserSubscriptions;
 import me.ccrama.redditslide.Visuals.Palette;
 import me.ccrama.redditslide.util.OnSingleClickListener;
 import me.ccrama.redditslide.util.SortingUtil;
@@ -83,7 +90,7 @@ public class SettingsGeneralFragment<ActivityType extends AppCompatActivity & Fo
             checkBox.setText(context.getString(R.string.settings_mail_check));
         } else {
             checkBox.setChecked(true);
-            landscape.setValue(Reddit.notificationTime / 15, false);
+            landscape.setValue(Reddit.notificationTime / 15.0f, false);
             checkBox.setText(context.getString(R.string.settings_notification_newline,
                     TimeUtils.getTimeInHoursAndMins(Reddit.notificationTime,
                             context.getBaseContext())));
@@ -227,6 +234,25 @@ public class SettingsGeneralFragment<ActivityType extends AppCompatActivity & Fo
                         SettingValues.overrideLanguage = isChecked;
                         SettingValues.prefs.edit()
                                 .putBoolean(SettingValues.PREF_OVERRIDE_LANGUAGE, isChecked)
+                                .apply();
+                    }
+                });
+            }
+        }
+
+        //hide fab while scrolling
+        {
+            SwitchCompat single = context.findViewById(R.id.settings_general_show_fab);
+
+            if (single != null) {
+                single.setChecked(SettingValues.alwaysShowFAB);
+                single.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        SettingsThemeFragment.changed = true;
+                        SettingValues.alwaysShowFAB = isChecked;
+                        SettingValues.prefs.edit()
+                                .putBoolean(SettingValues.PREF_ALWAYS_SHOW_FAB, isChecked)
                                 .apply();
                     }
                 });
@@ -907,7 +933,7 @@ public class SettingsGeneralFragment<ActivityType extends AppCompatActivity & Fo
         for (String s : all) {
             if (s != null && !s.isEmpty()) {
                 list.add(s);
-                if (subThresholds.keySet().contains(s)) {
+                if (subThresholds.containsKey(s)) {
                     checked[i] = true;
                 }
                 i++;
@@ -915,7 +941,7 @@ public class SettingsGeneralFragment<ActivityType extends AppCompatActivity & Fo
         }
 
         //Convert List back to Array
-        all = list.toArray(new String[list.size()]);
+        all = list.toArray(new String[0]);
 
         final ArrayList<String> toCheck = new ArrayList<>(subThresholds.keySet());
         final String[] finalAll = all;
@@ -1087,7 +1113,7 @@ public class SettingsGeneralFragment<ActivityType extends AppCompatActivity & Fo
         }
     }
 
-    public void onFolderSelection(FolderChooserDialogCreate dialog, File folder) {
+    public void onFolderSelection(FolderChooserDialogCreate dialog, File folder, boolean isSaveToLocation) {
         if (folder != null) {
             Reddit.appRestart.edit().putString("imagelocation", folder.getAbsolutePath()).apply();
             Toast.makeText(context,
